@@ -127,25 +127,20 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)shareAction {
-  if (nil == _actionSheet) {
+  //MVR - fix for needed to press the action button twice
+  if (nil == _actionSheet)
     _actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                delegate:self
                                       cancelButtonTitle:TTLocalizedString(@"Cancel", @"")
                                  destructiveButtonTitle:nil
                                       otherButtonTitles:TTLocalizedString(@"Open in Safari", @""),
                                                         nil];
-    if (TTIsPad()) {
-      [_actionSheet showFromBarButtonItem:_actionButton animated:YES];
+  if (TTIsPad()) {
+    [_actionSheet showFromBarButtonItem:_actionButton animated:YES];
 
-    }  else {
-      [_actionSheet showInView: self.view];
-    }
-
-  } else {
-    [_actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
-    TT_RELEASE_SAFELY(_actionSheet);
+  }  else {
+    [_actionSheet showInView: self.view];
   }
-
 }
 
 
