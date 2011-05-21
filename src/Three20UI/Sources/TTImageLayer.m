@@ -27,11 +27,11 @@
 
 @synthesize override = _override;
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)display {
   if (nil != _override) {
-    self.contents = (id)_override.image.CGImage;
+    //MVR - modified to handle image orientation
+    self.contents = (id)_override.imageRef;
 
   } else {
     return [super display];

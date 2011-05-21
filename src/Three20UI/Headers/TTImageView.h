@@ -30,6 +30,7 @@
   TTURLRequest* _request;
   NSString*     _urlPath;
   UIImage*      _image;
+  CGImageRef    _imageRef;
   UIImage*      _defaultImage;
   BOOL          _autoresizesToImage;
 
@@ -52,6 +53,11 @@
  * The image that is currently being displayed.
  */
 @property (nonatomic, readonly) UIImage* image;
+
+/**
+ * MVR - added for image orientation caching.
+ */
+@property (nonatomic, readonly) CGImageRef imageRef;
 
 /**
  * Override the default sizing operation and resize the frame of this view with the size of

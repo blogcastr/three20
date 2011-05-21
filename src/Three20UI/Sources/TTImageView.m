@@ -42,6 +42,7 @@
 
 @synthesize urlPath             = _urlPath;
 @synthesize image               = _image;
+@synthesize imageRef            = _imageRef;
 @synthesize defaultImage        = _defaultImage;
 @synthesize autoresizesToImage  = _autoresizesToImage;
 
@@ -64,6 +65,8 @@
   TT_RELEASE_SAFELY(_request);
   TT_RELEASE_SAFELY(_urlPath);
   TT_RELEASE_SAFELY(_image);
+  if (_imageRef)
+    CGImageRelease(_imageRef);
   TT_RELEASE_SAFELY(_defaultImage);
   [super dealloc];
 }
@@ -84,8 +87,11 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)drawRect:(CGRect)rect {
   if (self.style) {
+
     [super drawRect:rect];
+
   }
+
 }
 
 
@@ -97,6 +103,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)drawContent:(CGRect)rect {
+
   if (nil != _image) {
     [_image drawInRect:rect contentMode:self.contentMode];
 
@@ -170,7 +177,6 @@
     CGRect rect = context.frame;
     [context.shape addToPath:rect];
     CGContextClip(ctx);
-
     [self drawContent:rect];
 
     CGContextRestoreGState(ctx);
@@ -250,6 +256,10 @@
 - (void)unsetImage {
   [self stopLoading];
   self.image = nil;
+  if (_imageRef) {
+    CGImageRelease(_imageRef);
+    _imageRef = nil;
+  }
 }
 
 
