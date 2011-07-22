@@ -32,6 +32,10 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 TT_FIX_CATEGORY_BUG(TTImageViewInternal)
 
+static inline double radians (double degrees) {
+  return degrees * M_PI/180;
+}
+
 @implementation TTImageView (TTInternal)
 
 
@@ -46,7 +50,42 @@ TT_FIX_CATEGORY_BUG(TTImageViewInternal)
     // to draw in this case, we can take this shortcut.
     layer.override = self;
   }
+
   [layer setNeedsDisplay];
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)setImageRef:(UIImage*)image {
+  CGImageRef imageRef;
+  CGBitmapInfo bitmapInfo;
+  CGColorSpaceRef colorSpaceInfo;
+  CGContextRef bitmap;
+
+  if (_imageRef)
+	  CGContextRelease(_imageRef);
+  imageRef = image.CGImage;
+  bitmapInfo = CGImageGetBitmapInfo(imageRef);
+  colorSpaceInfo = CGImageGetColorSpace(imageRef);
+  if (bitmapInfo == kCGImageAlphaNone)
+    bitmapInfo = kCGImageAlphaNoneSkipLast;
+  if (image.imageOrientation == UIImageOrientationUp || image.imageOrientation == UIImageOrientationDown)
+    bitmap = CGBitmapContextCreate(NULL, image.size.width, image.size.height, CGImageGetBitsPerComponent(imageRef), CGImageGetBytesPerRow(imageRef), colorSpaceInfo, bitmapInfo);
+  else
+    bitmap = CGBitmapContextCreate(NULL, image.size.height, image.size.width, CGImageGetBitsPerComponent(imageRef), CGImageGetBytesPerRow(imageRef), colorSpaceInfo, bitmapInfo);
+  if (image.imageOrientation == UIImageOrientationLeft) {
+    CGContextRotateCTM (bitmap, radians(90));
+    CGContextTranslateCTM (bitmap, 0, -image.size.height);
+  } else if (image.imageOrientation == UIImageOrientationRight) {
+    CGContextRotateCTM (bitmap, radians(-90));
+    CGContextTranslateCTM (bitmap, -image.size.width, 0);
+  } else if (image.imageOrientation == UIImageOrientationDown) {
+    CGContextTranslateCTM (bitmap, image.size.width, image.size.height);
+    CGContextRotateCTM (bitmap, radians(-180.0));
+  }
+  CGContextDrawImage(bitmap, CGRectMake(0, 0, image.size.width, image.size.height), imageRef);
+  _imageRef = CGBitmapContextCreateImage(bitmap);
+  CGContextRelease(bitmap);
 }
 
 
@@ -56,7 +95,9 @@ TT_FIX_CATEGORY_BUG(TTImageViewInternal)
     [_image release];
     _image = [image retain];
 
-    [self updateLayer];
+    //MVR - added to handle image orientation
+    [self setImageRef:image];
+	[self updateLayer];
 
     CGRect frame = self.frame;
     if (_autoresizesToImage) {
