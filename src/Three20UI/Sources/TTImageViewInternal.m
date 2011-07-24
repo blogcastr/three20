@@ -63,7 +63,11 @@ static inline double radians (double degrees) {
   CGContextRef bitmap;
 
   if (_imageRef)
-	  CGContextRelease(_imageRef);
+    CGImageRelease(_imageRef);
+  if (!image) {
+    _imageRef = nil;
+    return;
+  }
   imageRef = image.CGImage;
   bitmapInfo = CGImageGetBitmapInfo(imageRef);
   colorSpaceInfo = CGImageGetColorSpace(imageRef);

@@ -256,10 +256,6 @@
 - (void)unsetImage {
   [self stopLoading];
   self.image = nil;
-  if (_imageRef) {
-    CGImageRelease(_imageRef);
-    _imageRef = nil;
-  }
 }
 
 
