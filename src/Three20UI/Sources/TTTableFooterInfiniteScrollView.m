@@ -57,8 +57,6 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)drawRect:(CGRect)rect{
   CGContextRef contextRef = UIGraphicsGetCurrentContext();
-  CGContextSetRGBFillColor(contextRef, 1, 1, 1, 1);
-  CGContextFillRect(contextRef, rect);
   if (!_loading) {
     CGFloat dotSize = 5;
     CGFloat x = roundf((self.width / 2) - (dotSize / 2));
