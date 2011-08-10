@@ -73,16 +73,23 @@ static inline double radians (double degrees) {
   colorSpaceInfo = CGImageGetColorSpace(imageRef);
   if (bitmapInfo == kCGImageAlphaNone)
     bitmapInfo = kCGImageAlphaNoneSkipLast;
-  if (image.imageOrientation == UIImageOrientationUp || image.imageOrientation == UIImageOrientationDown)
-    bitmap = CGBitmapContextCreate(NULL, image.size.width, image.size.height, CGImageGetBitsPerComponent(imageRef), CGImageGetBytesPerRow(imageRef), colorSpaceInfo, bitmapInfo);
+  if (image.imageOrientation == UIImageOrientationUp ||
+	  image.imageOrientation == UIImageOrientationDown)
+    bitmap = CGBitmapContextCreate(NULL, image.size.width, image.size.height,
+								   CGImageGetBitsPerComponent(imageRef), CGImageGetBytesPerRow(imageRef),
+								   colorSpaceInfo, bitmapInfo);
   else
-    bitmap = CGBitmapContextCreate(NULL, image.size.height, image.size.width, CGImageGetBitsPerComponent(imageRef), CGImageGetBytesPerRow(imageRef), colorSpaceInfo, bitmapInfo);
+    bitmap = CGBitmapContextCreate(NULL, image.size.height, image.size.width,
+								   CGImageGetBitsPerComponent(imageRef), CGImageGetBytesPerRow(imageRef),
+								   colorSpaceInfo, bitmapInfo);
   if (image.imageOrientation == UIImageOrientationLeft) {
     CGContextRotateCTM (bitmap, radians(90));
     CGContextTranslateCTM (bitmap, 0, -image.size.height);
+
   } else if (image.imageOrientation == UIImageOrientationRight) {
     CGContextRotateCTM (bitmap, radians(-90));
     CGContextTranslateCTM (bitmap, -image.size.width, 0);
+
   } else if (image.imageOrientation == UIImageOrientationDown) {
     CGContextTranslateCTM (bitmap, image.size.width, image.size.height);
     CGContextRotateCTM (bitmap, radians(-180.0));
@@ -101,7 +108,7 @@ static inline double radians (double degrees) {
 
     //MVR - added to handle image orientation
     [self setImageRef:image];
-	[self updateLayer];
+    [self updateLayer];
 
     CGRect frame = self.frame;
     if (_autoresizesToImage) {
